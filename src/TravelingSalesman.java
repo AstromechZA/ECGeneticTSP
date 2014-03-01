@@ -1,7 +1,10 @@
 import java.applet.Applet;
 import java.awt.*;
 import java.awt.event.*;
-import java.text.*;
+import bmeier.City;
+import bmeier.Population;
+import bmeier.Tour;
+import bmeier.World;
 
 /**
  * This class implements the Traveling Salesman problem as a Java applet.
@@ -18,8 +21,8 @@ public class TravelingSalesman extends Applet implements Runnable
     protected int selectedParents;          // The part of the population selected for mating.
     protected int generation;               // The current generation
 
-    protected City[] cities;                // The list of cities.
-    protected Chromosome[] chromosomes;     // The list of chromosomes.
+    protected World world;   
+    protected Population population;
     
     protected Thread worker = null;         // The background worker thread.
     protected boolean started = false;      // Is the thread started.
@@ -88,30 +91,16 @@ public class TravelingSalesman extends Applet implements Runnable
 
         FontMetrics fm = getGraphics().getFontMetrics();
         int bottom = ctrlButtons.getBounds().y - fm.getHeight() - 2;
-
-        // create a random list of cities
-        cities = new City[cityCount];
-        for (int i = 0; i < cityCount; i++)
-        {
-            cities[i] = new City(
-                    (int) (Math.random() * (getBounds().width - 10)),
-                    (int) (Math.random() * (bottom - 10))
-            );
-        }
-
-        // create the initial population of chromosomes
-
-        // TO DO
-
-        // start up the background thread
-
+        
+        world = new World(getBounds().width - 10, bottom - 10, cityCount);
+        population = new Population(populationSize, world);
+        
         started = true;
 
         generation = 0;
 
         if (worker != null) worker = null;
         worker = new Thread(this);
-        //  worker.setPriority(Thread.MIN_PRIORITY);
         worker.start();
     }
 
@@ -127,26 +116,32 @@ public class TravelingSalesman extends Applet implements Runnable
         g.setColor(Color.black);
         g.fillRect(0, 0, width, bottom);
 
-        if (started && (cities != null))
+        if (started && (world != null))
         {
             g.setColor(Color.green);
-            for (int i = 0; i < cityCount; i++)
+            
+            for(City city : world.cities)
             {
-                int xpos = cities[i].getx();
-                int ypos = cities[i].gety();
+                int xpos = (int) city.getX();
+                int ypos = (int) city.getY();
                 g.fillOval(xpos - 5, ypos - 5, 10, 10);
             }
 
             g.setColor(Color.white);
-            for (int i = 0; i < cityCount; i++)
+            
+            Tour bestTour = population.top();
+            
+            City last = bestTour.getCity(0);
+            for (int i = 1; i < world.numcities; i++)
             {
-                int icity = chromosomes[0].getCity(i);
-                if (i != 0)
-                {
-                    int last = chromosomes[0].getCity(i - 1);
-                    g.drawLine(cities[icity].getx(), cities[icity].gety(),
-                            cities[last].getx(), cities[last].gety());
-                }
+                City city = bestTour.getCity(i);
+                
+                g.drawLine(
+                    (int)last.getX(), (int)last.getY(),
+                    (int)city.getX(), (int)city.getY()
+                );
+                
+                last = city;
             }
 
         }
@@ -163,9 +158,6 @@ public class TravelingSalesman extends Applet implements Runnable
 
     public void run()
     {
-
-        double thisCost = 500.0;
-
         update();
 
         while (generation < 1000)
@@ -173,19 +165,11 @@ public class TravelingSalesman extends Applet implements Runnable
 
             generation++;
 
-            // TO DO
-
-            Chromosome.sortChromosomes(chromosomes, matingPopulationSize);
-
-            double cost = chromosomes[0].getCost();
-            cost = Math.abs(cost - thisCost);
-            thisCost = cost;
-
-            NumberFormat nf = NumberFormat.getInstance();
-            nf.setMinimumFractionDigits(2);
-            nf.setMinimumFractionDigits(2);
-
-            setStatus("Generation " + generation + " Cost " + (int) thisCost);
+            population = new Population(population, world);
+            
+            Tour best = population.top();
+            
+            setStatus("Generation " + generation + " Cost " + (int) best.getCost());
 
             update();
 
