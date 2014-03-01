@@ -12,76 +12,23 @@ public class TravelingSalesman extends Applet implements Runnable
 
     private static final long serialVersionUID = 1L;
 
-    /**
-     * How many cities to use.
-     */
-    protected int cityCount;
+    protected int cityCount;                // How many cities to use.
+    protected int populationSize;           // How many chromosomes to use.
+    protected int matingPopulationSize;     // The part of the population eligible for mating.
+    protected int selectedParents;          // The part of the population selected for mating.
+    protected int generation;               // The current generation
 
-    /**
-     * How many chromosomes to use.
-     */
-    protected int populationSize;
-
-    /**
-     * The part of the population eligable for mateing.
-     */
-    protected int matingPopulationSize;
-
-    /**
-     * The part of the population selected for mating.
-     */
-    protected int selectedParents;
-
-    /**
-     * The current generation
-     */
-    protected int generation;
-
-    /**
-     * The background worker thread.
-     */
-    protected Thread worker = null;
-
-    /**
-     * Is the thread started.
-     */
-    protected boolean started = false;
-
-    /**
-     * The list of cities.
-     */
-    protected City[] cities;
-
-    /**
-     * The list of chromosomes.
-     */
-    protected Chromosome[] chromosomes;
-
-    /**
-     * The Start button.
-     */
-    private Button ctrlStart;
-
-    /**
-     * The TextField that holds the number of cities.
-     */
-    private TextField ctrlCities;
-
-    /**
-     * The TextField for the population size.
-     */
-    private TextField ctrlPopulationSize;
-
-    /**
-     * Holds the buttons and other controls, forms a strip across the bottom of
-     * the applet.
-     */
-    private Panel ctrlButtons;
-
-    /**
-     * The current status, which is displayed just above the controls.
-     */
-    private String status = "";
+    protected City[] cities;                // The list of cities.
+    protected Chromosome[] chromosomes;     // The list of chromosomes.
+    
+    protected Thread worker = null;         // The background worker thread.
+    protected boolean started = false;      // Is the thread started.
+    
+    private Button ctrlStart;               // The Start button.
+    private TextField ctrlCities;           // The TextField that holds the number of cities.
+    private TextField ctrlPopulationSize;   // The TextField for the population size.
+    private Panel ctrlButtons;              // Holds the buttons and other controls, forms a strip across the bottom of the applet.
+    private String status = "";             // The current status, which is displayed just above the controls.
 
     public void init()
     {
@@ -101,9 +48,8 @@ public class TravelingSalesman extends Applet implements Runnable
         ctrlPopulationSize.setText("1000");
         ctrlCities.setText("50");
 
-        // add an action listener for the button
+        // add an action listener for the START button
         ctrlStart.addActionListener(new ActionListener() {
-
             public void actionPerformed(ActionEvent arg0)
             {
                 startThread();
@@ -119,7 +65,8 @@ public class TravelingSalesman extends Applet implements Runnable
      */
     public void startThread()
     {
-
+        
+        // try parse city count input, otherwise 50 cities
         try
         {
             cityCount = Integer.parseInt(ctrlCities.getText());
@@ -129,6 +76,7 @@ public class TravelingSalesman extends Applet implements Runnable
             cityCount = 50;
         }
 
+        // try parse population count input, otherwise 1000 individuals
         try
         {
             populationSize = Integer.parseInt(ctrlPopulationSize.getText());
@@ -142,13 +90,13 @@ public class TravelingSalesman extends Applet implements Runnable
         int bottom = ctrlButtons.getBounds().y - fm.getHeight() - 2;
 
         // create a random list of cities
-
         cities = new City[cityCount];
         for (int i = 0; i < cityCount; i++)
         {
             cities[i] = new City(
                     (int) (Math.random() * (getBounds().width - 10)),
-                    (int) (Math.random() * (bottom - 10)));
+                    (int) (Math.random() * (bottom - 10))
+            );
         }
 
         // create the initial population of chromosomes
@@ -163,13 +111,9 @@ public class TravelingSalesman extends Applet implements Runnable
 
         if (worker != null) worker = null;
         worker = new Thread(this);
-        worker.setPriority(Thread.MIN_PRIORITY);
+        //  worker.setPriority(Thread.MIN_PRIORITY);
         worker.start();
     }
-
-    /**
-     * Update the display
-     */
 
     public void update()
     {
@@ -212,20 +156,11 @@ public class TravelingSalesman extends Applet implements Runnable
         getGraphics().drawImage(img, 0, 0, this);
     }
 
-    /**
-     * Update the status.
-     * 
-     * @param status
-     *            The status.
-     */
     public void setStatus(String status)
     {
         this.status = status;
     }
 
-    /**
-     * The main loop for the background thread.
-     */
     public void run()
     {
 
