@@ -5,7 +5,7 @@ import java.util.Random;
 public class Tour implements Comparable<Tour>
 {
     private World world;
-    private int[] order;
+    public int[] order;
     private float cost;
     
     public Tour(World w)
@@ -41,6 +41,13 @@ public class Tour implements Comparable<Tour>
         refreshCost();
     }
     
+    public Tour(World w, int[] o)
+    {
+        world = w;
+        order = new int[o.length];
+        System.arraycopy(o, 0, order, 0, o.length);
+    }
+    
     public void refreshCost()
     {
         cost = 0;
@@ -62,29 +69,8 @@ public class Tour implements Comparable<Tour>
         return world.cities.get(order[i]);
     }
 
-    public static Pair<Tour, Tour> Cross(Tour t1, Tour t2, Random rng)
+    public World getWorld()
     {
-        int crosspoint = rng.nextInt(t1.order.length);
-        
-        
-        
-        return new Pair<Tour, Tour>(t1, t2);
+        return world;
     }
-
-    public static Tour Mutate(Tour before, Random rng)
-    {
-        Tour after = new Tour(before);
-        
-        int from = rng.nextInt(before.order.length);
-        int to = rng.nextInt(before.order.length);
-        
-        int t = after.order[from];
-        after.order[from] = after.order[to];
-        after.order[to] = t;
-        
-        after.refreshCost();
-        
-        return after;
-    }
-    
 }

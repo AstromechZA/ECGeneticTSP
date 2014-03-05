@@ -1,6 +1,7 @@
 import java.applet.Applet;
 import java.awt.*;
 import java.awt.event.*;
+
 import bmeier.City;
 import bmeier.Population;
 import bmeier.Tour;
@@ -172,6 +173,15 @@ public class TravelingSalesman extends Applet implements Runnable
             setStatus("Generation " + generation + " Cost " + (int) best.getCost());
 
             update();
+            try
+            {
+                Thread.sleep(1000);
+            }
+            catch (InterruptedException e)
+            {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
 
         }
         setStatus("Solution found after " + generation + " generations.");

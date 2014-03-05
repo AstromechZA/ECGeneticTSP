@@ -1,4 +1,6 @@
-package bmeier;
+package tests;
+
+import bmeier.RouletteWheelSelector;
 
 public class TestRoulette
 {

@@ -5,6 +5,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
+import bmeier.crossover.PMXCrossover;
+import bmeier.mutator.SingleSwapMutator;
+
 public class Population
 {
     private List<Tour> individuals = new ArrayList<Tour>();
@@ -22,20 +25,22 @@ public class Population
     
     public Population(Population previous, World w)
     {
-        Random rng = new Random();
                 
         RouletteWheelSelector<Tour> wheel = new RouletteWheelSelector<Tour>();
         for(Tour t : previous.individuals) wheel.add(t, 1.0f/t.getCost());        
+        
+        SingleSwapMutator mut = new SingleSwapMutator();
+        PMXCrossover recom = new PMXCrossover();
         
         while(individuals.size() < previous.individuals.size())
         {
             Tour t1 = wheel.spin();
             Tour t2 = wheel.spin();
             
-            Pair<Tour, Tour> offspring = Tour.Cross(t1, t2, rng);
+            Pair<Tour, Tour> offspring = recom.recombine(t1, t2);
 
-            individuals.add(Tour.Mutate(offspring.first, rng));
-            individuals.add(Tour.Mutate(offspring.second, rng));            
+            individuals.add(mut.mutate(offspring.first));
+            individuals.add(mut.mutate(offspring.second));            
         }
                 
         while(individuals.size() > previous.individuals.size()) individuals.remove(0);        
