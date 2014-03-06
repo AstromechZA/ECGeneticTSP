@@ -1,7 +1,9 @@
 package bmeier.crossover;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -18,12 +20,6 @@ import bmeier.util.Pair;
 public class ERCrossover implements ICrossoverOp
 {
     
-    BetterRandom rng;
-    
-    public ERCrossover()
-    {
-        rng = new BetterRandom();
-    }
     
     @Override
     public Pair<Tour, Tour> recombine(Tour t1, Tour t2)
@@ -64,7 +60,8 @@ public class ERCrossover implements ICrossoverOp
        
        int[] child = new int[parent1.length];
        
-       int cityToAdd = (rng.nextInt(2) > 0) ? parent1[0] : parent2[0];
+       int cityToAdd = (BetterRandom.instance().nextInt(2) > 0) ? parent1[0] : parent2[0];
+       List<Integer> candidates = new ArrayList<Integer>();
        for(int k=0;k<parent1.length;k++)
        {      
            
@@ -75,14 +72,13 @@ public class ERCrossover implements ICrossoverOp
            if(!adjacency.get(cityToAdd).isEmpty())
            {
                int mincount = Integer.MAX_VALUE;
-               Set<Integer> candidates = new HashSet<Integer>();
                for(int c : adjacency.get(cityToAdd)) 
                {
                    int l = adjacency.get(c).size();
                    if(l < mincount)
                    {
                        mincount = l;
-                       candidates = new HashSet<Integer>();
+                       candidates.clear();
                        candidates.add(c);
                    }
                    else if(l == mincount)
@@ -91,11 +87,11 @@ public class ERCrossover implements ICrossoverOp
                    }                   
                }
                
-               cityToAdd = rng.choose(candidates);
+               cityToAdd = BetterRandom.instance().choose(candidates);
            }
            else
            {
-               cityToAdd = rng.choose(allPossibleCities);
+               cityToAdd = BetterRandom.instance().choose(allPossibleCities);
            }
 
            // add N to K
