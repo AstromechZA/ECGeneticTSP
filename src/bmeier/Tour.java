@@ -46,6 +46,7 @@ public class Tour implements Comparable<Tour>
         world = w;
         order = new int[o.length];
         System.arraycopy(o, 0, order, 0, o.length);
+        refreshCost();
     }
     
     public void refreshCost()

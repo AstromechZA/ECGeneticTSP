@@ -5,8 +5,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
+import bmeier.crossover.ERCrossover;
 import bmeier.crossover.PMXCrossover;
 import bmeier.mutator.SingleSwapMutator;
+import bmeier.util.Pair;
 
 public class Population
 {
@@ -14,10 +16,9 @@ public class Population
     
     public Population(int size, World w)
     {
-        Random r = new Random();
         for(int i=0;i<size;i++)
         {
-            individuals.add(new Tour(w, r));
+            individuals.add(GreedyTourBuilder.create(w));
         }
         Collections.sort(individuals);
     }
@@ -30,7 +31,7 @@ public class Population
         for(Tour t : previous.individuals) wheel.add(t, 1.0f/t.getCost());        
         
         SingleSwapMutator mut = new SingleSwapMutator();
-        PMXCrossover recom = new PMXCrossover();
+        ERCrossover recom = new ERCrossover();
         
         while(individuals.size() < previous.individuals.size())
         {
@@ -38,9 +39,18 @@ public class Population
             Tour t2 = wheel.spin();
             
             Pair<Tour, Tour> offspring = recom.recombine(t1, t2);
-
-            individuals.add(mut.mutate(offspring.first));
-            individuals.add(mut.mutate(offspring.second));            
+            Tour c1 = mut.mutate(offspring.first);
+            Tour c2 = mut.mutate(offspring.second);
+            
+            List<Tour> t = new ArrayList<Tour>(4);
+            t.add(t1);
+            t.add(t2);
+            t.add(c1);
+            t.add(c2);
+            Collections.sort(t);
+            
+            individuals.add(t.get(0));
+            individuals.add(t.get(1));            
         }
                 
         while(individuals.size() > previous.individuals.size()) individuals.remove(0);        
@@ -56,6 +66,11 @@ public class Population
     public Tour top()
     {
         return individuals.get(0);        
+    }
+    
+    public Tour bottom()
+    {
+        return individuals.get(individuals.size()-1);
     }
     
     

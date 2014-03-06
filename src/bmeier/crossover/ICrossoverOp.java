@@ -1,7 +1,7 @@
 package bmeier.crossover;
 
-import bmeier.Pair;
 import bmeier.Tour;
+import bmeier.util.Pair;
 
 public interface ICrossoverOp
 {

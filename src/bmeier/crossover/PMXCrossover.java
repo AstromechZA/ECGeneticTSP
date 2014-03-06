@@ -6,8 +6,8 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 
-import bmeier.Pair;
 import bmeier.Tour;
+import bmeier.util.Pair;
 
 
 /**
@@ -56,6 +56,7 @@ public class PMXCrossover implements ICrossoverOp
         {
             child[i] = parent1[i];
             alreadycopied.add(child[i]);
+            usedpositions.add(i);
         }
                
         // build knowledge

@@ -17,17 +17,22 @@ public class SingleSwapMutator implements IMutatorOp
     public Tour mutate(Tour before)
     {
         Tour after = new Tour(before);
-        
+
         int from = rng.nextInt(before.order.length);
         int to = rng.nextInt(before.order.length);
-        
-        int t = after.order[from];
-        after.order[from] = after.order[to];
-        after.order[to] = t;
-        
+        swapValues(after.order, from, to);
+                
         after.refreshCost();
         
         return after;
+    }
+    
+    protected int[] swapValues(int[] src, int i, int j)
+    {
+        int t = src[i];
+        src[i] = src[j];
+        src[j] = t;
+        return src;
     }
 
 }

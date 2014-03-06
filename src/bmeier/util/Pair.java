@@ -1,4 +1,4 @@
-package bmeier;
+package bmeier.util;
 
 public class Pair<T1, T2>
 {

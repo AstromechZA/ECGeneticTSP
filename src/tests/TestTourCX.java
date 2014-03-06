@@ -1,7 +1,7 @@
 package tests;
 
-import bmeier.Pair;
 import bmeier.crossover.CXCrossover;
+import bmeier.util.Pair;
 import bmeier.util.PrintUtils;
 
 public class TestTourCX

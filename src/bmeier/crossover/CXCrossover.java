@@ -4,8 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-import bmeier.Pair;
 import bmeier.Tour;
+import bmeier.util.Pair;
 
 
 public class CXCrossover implements ICrossoverOp

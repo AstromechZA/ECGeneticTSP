@@ -6,6 +6,7 @@ import bmeier.City;
 import bmeier.Population;
 import bmeier.Tour;
 import bmeier.World;
+import bmeier.util.InputCatcher;
 
 /**
  * This class implements the Traveling Salesman problem as a Java applet.
@@ -69,26 +70,8 @@ public class TravelingSalesman extends Applet implements Runnable
      */
     public void startThread()
     {
-        
-        // try parse city count input, otherwise 50 cities
-        try
-        {
-            cityCount = Integer.parseInt(ctrlCities.getText());
-        }
-        catch (NumberFormatException e)
-        {
-            cityCount = 50;
-        }
-
-        // try parse population count input, otherwise 1000 individuals
-        try
-        {
-            populationSize = Integer.parseInt(ctrlPopulationSize.getText());
-        }
-        catch (NumberFormatException e)
-        {
-            populationSize = 1000;
-        }
+        cityCount = InputCatcher.toInt(ctrlCities.getText(), 50);
+        populationSize = InputCatcher.toInt(ctrlPopulationSize.getText(), 1000);        
 
         FontMetrics fm = getGraphics().getFontMetrics();
         int bottom = ctrlButtons.getBounds().y - fm.getHeight() - 2;
@@ -173,15 +156,6 @@ public class TravelingSalesman extends Applet implements Runnable
             setStatus("Generation " + generation + " Cost " + (int) best.getCost());
 
             update();
-            try
-            {
-                Thread.sleep(1000);
-            }
-            catch (InterruptedException e)
-            {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
 
         }
         setStatus("Solution found after " + generation + " generations.");

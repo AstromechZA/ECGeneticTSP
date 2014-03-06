@@ -1,8 +1,8 @@
 package tests;
 
-import bmeier.Pair;
 import bmeier.crossover.CXCrossover;
 import bmeier.crossover.ERCrossover;
+import bmeier.util.Pair;
 import bmeier.util.PrintUtils;
 
 public class TestTourER

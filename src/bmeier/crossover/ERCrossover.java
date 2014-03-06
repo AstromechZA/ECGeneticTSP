@@ -1,16 +1,13 @@
 package bmeier.crossover;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.Set;
 
-import bmeier.Pair;
 import bmeier.Tour;
 import bmeier.util.BetterRandom;
+import bmeier.util.Pair;
 
 
 /**
