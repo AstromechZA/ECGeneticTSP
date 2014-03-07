@@ -6,10 +6,12 @@ public class PrintUtils
     {
         StringBuffer sb = new StringBuffer();
         sb.append('[');
+        boolean first = true;
         for (int aa : a)
         {
+        	if(!first) sb.append(", ");
+        	first = false;
             sb.append(aa);
-            sb.append(", ");
         }
         sb.append(']');
         return sb.toString();
@@ -19,10 +21,12 @@ public class PrintUtils
     {
         StringBuffer sb = new StringBuffer();
         sb.append('[');
+        boolean first = true;
         for (boolean aa : a)
         {
+        	if(!first) sb.append(", ");
+        	first = false;
             sb.append(aa);
-            sb.append(", ");
         }
         sb.append(']');
         return sb.toString();

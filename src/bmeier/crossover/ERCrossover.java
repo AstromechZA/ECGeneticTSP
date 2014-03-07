@@ -19,8 +19,20 @@ import bmeier.util.Pair;
  */
 public class ERCrossover implements ICrossoverOp
 {
-    
-    
+	List<Set<Integer>> adjacency;
+	
+	int numcities;
+	
+    public ERCrossover(int numcities)
+    {
+    	this.numcities = numcities;
+    	adjacency = new ArrayList<Set<Integer>>(numcities);
+    	for(int i=0;i<numcities;i++) 
+        {
+    		adjacency.add(new HashSet<Integer>());
+        }
+    }
+	
     @Override
     public Pair<Tour, Tour> recombine(Tour t1, Tour t2)
     {
@@ -32,16 +44,13 @@ public class ERCrossover implements ICrossoverOp
     public int[] edgerecombine(int[] parent1, int[] parent2)
     {   
         
-        // adjacency matrix
-        Map<Integer, Set<Integer>> adjacency = new HashMap<Integer, Set<Integer>>();
         for(int i=0;i<parent1.length;i++) 
         {
-            Set<Integer> temp = new HashSet<Integer>();
+            Set<Integer> temp = adjacency.get(parent1[i]);
+            temp.clear();
             
             temp.add(parent1[(i>0) ? (i-1) : (parent1.length-1)]);
-            temp.add(parent1[(i<parent1.length-1) ? (i+1) : 0]);
-            
-            adjacency.put(parent1[i], temp);
+            temp.add(parent1[(i<parent1.length-1) ? (i+1) : 0]);            
         }        
         for(int i=0;i<parent2.length;i++) 
         {
@@ -66,7 +75,7 @@ public class ERCrossover implements ICrossoverOp
        {      
            
            // remove N from neighbours
-           for(Set<Integer> v : adjacency.values()) v.remove(cityToAdd);
+           for(Set<Integer> v : adjacency) v.remove(cityToAdd);
            
            // If N's neighbor list is non-empty
            if(!adjacency.get(cityToAdd).isEmpty())

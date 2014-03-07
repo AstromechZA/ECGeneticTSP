@@ -76,7 +76,8 @@ public class TravelingSalesman extends Applet implements Runnable
         FontMetrics fm = getGraphics().getFontMetrics();
         int bottom = ctrlButtons.getBounds().y - fm.getHeight() - 2;
         
-        world = new World(getBounds().width - 10, bottom - 10, cityCount);
+        world = new World(getBounds().width - 10, bottom - 10, cityCount); 
+        
         population = new Population(populationSize, world);
         
         started = true;
@@ -90,6 +91,7 @@ public class TravelingSalesman extends Applet implements Runnable
 
     public void update()
     {
+    	
         Image img = createImage(getBounds().width, getBounds().height);
         Graphics g = img.getGraphics();
         FontMetrics fm = g.getFontMetrics();

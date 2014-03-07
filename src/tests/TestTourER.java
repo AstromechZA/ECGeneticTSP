@@ -16,7 +16,7 @@ public class TestTourER
         System.out.println(PrintUtils.a_to_s(p1));
         System.out.println(PrintUtils.a_to_s(p2));
         
-        ERCrossover er = new ERCrossover();
+        ERCrossover er = new ERCrossover(10);
         
         int[] c1 = er.edgerecombine(p1, p2);
         int[] c2 = er.edgerecombine(p1, p2);

@@ -1,5 +1,11 @@
 package bmeier;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -22,6 +28,26 @@ public class World
         this.numcities = numcities;
         createCities(numcities);
         calcDistances(numcities);
+    }
+    
+    public World(String filename) throws IOException
+    {
+    	BufferedReader br = new BufferedReader(new FileReader(new File(filename)));
+
+        cities = new ArrayList<City>();
+        
+    	String l = br.readLine();
+    	while(l != null)
+    	{
+    		String[] parts = l.split(" ");
+    		float f1 = Float.parseFloat(parts[0]);
+    		float f2 = Float.parseFloat(parts[1]);
+    		cities.add(new City(f1, f2));
+    		l = br.readLine();
+    	}
+
+        numcities = cities.size();
+        calcDistances(numcities);        
     }
     
     private void createCities(int c) 
