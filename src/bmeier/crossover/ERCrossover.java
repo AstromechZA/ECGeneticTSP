@@ -3,10 +3,12 @@ package bmeier.crossover;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import bmeier.AdjacencyController;
 import bmeier.Tour;
 import bmeier.util.BetterRandom;
 import bmeier.util.Pair;
@@ -19,18 +21,17 @@ import bmeier.util.Pair;
  */
 public class ERCrossover implements ICrossoverOp
 {
-	List<Set<Integer>> adjacency;
-	
+	AdjacencyController adjacency;
+	Set<Integer> allPossibleCities;
+	List<Integer> candidates;
 	int numcities;
 	
     public ERCrossover(int numcities)
     {
     	this.numcities = numcities;
-    	adjacency = new ArrayList<Set<Integer>>(numcities);
-    	for(int i=0;i<numcities;i++) 
-        {
-    		adjacency.add(new HashSet<Integer>());
-        }
+    	adjacency = new AdjacencyController(numcities);    	
+    	allPossibleCities = new HashSet<Integer>();
+    	candidates = new ArrayList<Integer>();
     }
 	
     @Override
@@ -43,59 +44,60 @@ public class ERCrossover implements ICrossoverOp
     
     public int[] edgerecombine(int[] parent1, int[] parent2)
     {   
+
+        adjacency.clear();
         
-        for(int i=0;i<parent1.length;i++) 
-        {
-            Set<Integer> temp = adjacency.get(parent1[i]);
-            temp.clear();
-            
-            temp.add(parent1[(i>0) ? (i-1) : (parent1.length-1)]);
-            temp.add(parent1[(i<parent1.length-1) ? (i+1) : 0]);            
-        }        
-        for(int i=0;i<parent2.length;i++) 
-        {
-            Set<Integer> temp = adjacency.get(parent2[i]);
-            
-            temp.add(parent2[(i>0) ? (i-1) : (parent2.length-1)]);
-            temp.add(parent2[(i<parent2.length-1) ? (i+1) : 0]);
-        }        
+    	_buildadjacencyp(parent1);
         
-        
-       Set<Integer> allPossibleCities = new HashSet<Integer>();
-       for(int i=0;i<parent1.length;i++)
-       {
-           allPossibleCities.add(i);
-       }
+    	_buildadjacencyp(parent2);
+                
+    	_buildpossibles(parent1);
        
        int[] child = new int[parent1.length];
        
-       int cityToAdd = (BetterRandom.instance().nextInt(2) > 0) ? parent1[0] : parent2[0];
-       List<Integer> candidates = new ArrayList<Integer>();
+       int cityToAdd = (BetterRandom.instance().nextBoolean()) ? parent1[0] : parent2[0];
+       
        for(int k=0;k<parent1.length;k++)
        {      
            
-           // remove N from neighbours
-           for(Set<Integer> v : adjacency) v.remove(cityToAdd);
+    	   _clearfromadj(cityToAdd);
            
            // If N's neighbor list is non-empty
-           if(!adjacency.get(cityToAdd).isEmpty())
+           if(adjacency.hasNeighbours(cityToAdd))
            {
+
+               System.out.println("." + adjacency.numNeighbours(cityToAdd));
                int mincount = Integer.MAX_VALUE;
-               for(int c : adjacency.get(cityToAdd)) 
-               {
-                   int l = adjacency.get(c).size();
-                   if(l < mincount)
-                   {
-                       mincount = l;
-                       candidates.clear();
-                       candidates.add(c);
-                   }
-                   else if(l == mincount)
-                   {
-                       candidates.add(c);
-                   }                   
-               }
+               Iterator<Integer> neighbours = adjacency.getNIt(cityToAdd);
+
+               candidates.clear();               
                
+               while(neighbours.hasNext()) 
+               {
+
+            	   int c = neighbours.next();
+                   int l = adjacency.numNeighbours(c);
+
+                   System.out.println("-- " + c + " = " + l);
+                   if(l > 0)
+                   {
+                	   System.out.println(l);
+                	   if(l < mincount)
+                       {
+                           mincount = l;
+                           candidates.clear();
+                           candidates.add(c);
+                       }
+                       else if(l == mincount)
+                       {
+                           candidates.add(c);
+                       }    
+                   }
+                   
+                                  
+               }
+
+               System.out.println(candidates.size());
                cityToAdd = BetterRandom.instance().choose(candidates);
            }
            else
@@ -112,5 +114,32 @@ public class ERCrossover implements ICrossoverOp
        return child;
         
     }
+
+    private void _buildadjacencyp(int[] p)
+    {
+    	for(int i=0;i<p.length;i++) 
+        {            
+            adjacency.setAdjacent(p[i], p[(i>0) ? (i-1) : (p.length-1)]);
+            adjacency.setAdjacent(p[i], p[(i<p.length-1) ? (i+1) : 0]);            
+        }    
+    }
+    
+
+    private void _buildpossibles(int[] parent1)
+    {
+    	allPossibleCities = new HashSet<Integer>();
+        for(int i=0;i<parent1.length;i++)
+        {
+            allPossibleCities.add(i);
+        }
+    }
+    
+    private void _clearfromadj(int i)
+    {
+    	
+        adjacency.removeLinks(i);
+    }
+
+
 
 }
