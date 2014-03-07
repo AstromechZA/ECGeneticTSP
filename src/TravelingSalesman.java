@@ -148,7 +148,6 @@ public class TravelingSalesman extends Applet implements Runnable
 
         while (generation < 1000)
         {
-
             generation++;
 
             population = new Population(population, world);
@@ -156,8 +155,9 @@ public class TravelingSalesman extends Applet implements Runnable
             Tour best = population.top();
             
             setStatus("Generation " + generation + " Cost " + (int) best.getCost());
-
-            update();
+            System.out.println((int) best.getCost());
+            
+            if(generation % 10 == 1)update();
 
         }
         setStatus("Solution found after " + generation + " generations.");

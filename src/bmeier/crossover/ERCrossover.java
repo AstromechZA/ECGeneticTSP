@@ -25,6 +25,7 @@ public class ERCrossover implements ICrossoverOp
 	Set<Integer> allPossibleCities;
 	List<Integer> candidates;
 	int numcities;
+	int[] child;
 	
     public ERCrossover(int numcities)
     {
@@ -32,6 +33,7 @@ public class ERCrossover implements ICrossoverOp
     	adjacency = new AdjacencyController(numcities);    	
     	allPossibleCities = new HashSet<Integer>();
     	candidates = new ArrayList<Integer>();
+    	child = new int[numcities];  
     }
 	
     @Override
@@ -44,73 +46,18 @@ public class ERCrossover implements ICrossoverOp
     
     public int[] edgerecombine(int[] parent1, int[] parent2)
     {   
-
-        adjacency.clear();
-        
-    	_buildadjacencyp(parent1);
-        
-    	_buildadjacencyp(parent2);
-                
-    	_buildpossibles(parent1);
+    	setup(parent1, parent2);
        
-       int[] child = new int[parent1.length];
-       
-       int cityToAdd = (BetterRandom.instance().nextBoolean()) ? parent1[0] : parent2[0];
-       child[0] = (cityToAdd);
-       allPossibleCities.remove(cityToAdd);
-       adjacency.removeLinks(cityToAdd);
-       
-       for(int k=1;k<parent1.length;k++)
+		int cityToAdd = (BetterRandom.instance().nextBoolean()) ? parent1[0] : parent2[0];
+				
+       _consume(child, 0, cityToAdd);
+              
+       for(int k=1;k<numcities;k++)
        {      
            
-           
-           // If N's neighbor list is non-empty
-           if(adjacency.hasNeighbours(cityToAdd))
-           {
-               int mincount = Integer.MAX_VALUE;
-               Iterator<Integer> neighbours = adjacency.getNIt(cityToAdd);
+    	   cityToAdd = _nextCity(cityToAdd);           
 
-               candidates.clear();               
-               
-               while(neighbours.hasNext()) 
-               {
-            	   int c = neighbours.next();
-                   int l = adjacency.numNeighbours(c);
-
-                   if(l > 0)
-                   {
-                	   if(l < mincount)
-                       {
-                           mincount = l;
-                           candidates.clear();
-                           candidates.add(c);
-                       }
-                       else if(l == mincount)
-                       {
-                           candidates.add(c);
-                       }    
-                   }
-                   
-                                  
-               }
-               if (candidates.size() > 0)
-               {
-                   cityToAdd = BetterRandom.instance().choose(candidates);
-               }
-               else
-               {
-                   cityToAdd = BetterRandom.instance().choose(allPossibleCities);
-               }
-           }
-           else
-           {
-               cityToAdd = BetterRandom.instance().choose(allPossibleCities);
-           }
-
-           // add N to K
-           child[k] = (cityToAdd);
-           allPossibleCities.remove(cityToAdd);
-           adjacency.removeLinks(cityToAdd);
+           _consume(child, k, cityToAdd);
                
        }
         
@@ -118,12 +65,24 @@ public class ERCrossover implements ICrossoverOp
         
     }
 
+    
+    private void setup(int[] p1, int[] p2)
+    {
+    	adjacency.clear();
+        
+    	_buildadjacencyp(p1);
+        
+    	_buildadjacencyp(p2);
+                
+    	_buildpossibles(p1);
+    }
+    
     private void _buildadjacencyp(int[] p)
     {
-    	for(int i=0;i<p.length;i++) 
+    	for(int i=0;i<numcities;i++) 
         {            
-            adjacency.setAdjacent(p[i], p[(i>0) ? (i-1) : (p.length-1)]);
-            adjacency.setAdjacent(p[i], p[(i<p.length-1) ? (i+1) : 0]);            
+            adjacency.setAdjacent(p[i], p[(i>0) ? (i-1) : (numcities-1)]);
+            adjacency.setAdjacent(p[i], p[(i<numcities-1) ? (i+1) : 0]);            
         }    
     }
     
@@ -131,13 +90,64 @@ public class ERCrossover implements ICrossoverOp
     private void _buildpossibles(int[] parent1)
     {
     	allPossibleCities = new HashSet<Integer>();
-        for(int i=0;i<parent1.length;i++)
+        for(int i=0;i<numcities;i++)
         {
             allPossibleCities.add(i);
         }
     }
     
+    private int _nextCity(int last)
+    {
+    	// If N's neighbor list is non-empty
+        if(adjacency.hasNeighbours(last))
+        {
+            int mincount = Integer.MAX_VALUE;
+            Iterator<Integer> neighbours = adjacency.getNIt(last);
 
+            candidates.clear();               
+            
+            while(neighbours.hasNext()) 
+            {
+         	   int c = neighbours.next();
+                int l = adjacency.numNeighbours(c);
+
+                if(l > 0)
+                {
+             	   if(l < mincount)
+                    {
+                        mincount = l;
+                        candidates.clear();
+                        candidates.add(c);
+                    }
+                    else if(l == mincount)
+                    {
+                        candidates.add(c);
+                    }    
+                }
+                
+                               
+            }
+            if (candidates.size() > 0)
+            {
+                return BetterRandom.instance().choose(candidates);
+            }
+            else
+            {
+                return BetterRandom.instance().choose(allPossibleCities);
+            }
+        }
+        else
+        {
+            return BetterRandom.instance().choose(allPossibleCities);
+        }
+    }
+    
+    private void _consume(int[] target, int index, int value)
+    {
+    	target[index] = (value);
+        allPossibleCities.remove(value);
+        adjacency.removeLinks(value);
+    }
 
 
 }
