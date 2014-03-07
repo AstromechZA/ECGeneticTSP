@@ -56,17 +56,17 @@ public class ERCrossover implements ICrossoverOp
        int[] child = new int[parent1.length];
        
        int cityToAdd = (BetterRandom.instance().nextBoolean()) ? parent1[0] : parent2[0];
+       child[0] = (cityToAdd);
+       allPossibleCities.remove(cityToAdd);
+       adjacency.removeLinks(cityToAdd);
        
-       for(int k=0;k<parent1.length;k++)
+       for(int k=1;k<parent1.length;k++)
        {      
            
-    	   _clearfromadj(cityToAdd);
            
            // If N's neighbor list is non-empty
            if(adjacency.hasNeighbours(cityToAdd))
            {
-
-               System.out.println("." + adjacency.numNeighbours(cityToAdd));
                int mincount = Integer.MAX_VALUE;
                Iterator<Integer> neighbours = adjacency.getNIt(cityToAdd);
 
@@ -74,14 +74,11 @@ public class ERCrossover implements ICrossoverOp
                
                while(neighbours.hasNext()) 
                {
-
             	   int c = neighbours.next();
                    int l = adjacency.numNeighbours(c);
 
-                   System.out.println("-- " + c + " = " + l);
                    if(l > 0)
                    {
-                	   System.out.println(l);
                 	   if(l < mincount)
                        {
                            mincount = l;
@@ -96,9 +93,14 @@ public class ERCrossover implements ICrossoverOp
                    
                                   
                }
-
-               System.out.println(candidates.size());
-               cityToAdd = BetterRandom.instance().choose(candidates);
+               if (candidates.size() > 0)
+               {
+                   cityToAdd = BetterRandom.instance().choose(candidates);
+               }
+               else
+               {
+                   cityToAdd = BetterRandom.instance().choose(allPossibleCities);
+               }
            }
            else
            {
@@ -108,6 +110,7 @@ public class ERCrossover implements ICrossoverOp
            // add N to K
            child[k] = (cityToAdd);
            allPossibleCities.remove(cityToAdd);
+           adjacency.removeLinks(cityToAdd);
                
        }
         
@@ -134,11 +137,6 @@ public class ERCrossover implements ICrossoverOp
         }
     }
     
-    private void _clearfromadj(int i)
-    {
-    	
-        adjacency.removeLinks(i);
-    }
 
 
 
