@@ -78,7 +78,7 @@ public class TravelingSalesman extends Applet implements Runnable
         
         world = new World(getBounds().width - 10, bottom - 10, cityCount); 
         
-        population = new Population(populationSize, world);
+        population = new Population(populationSize, world, 4);
         
         started = true;
 
@@ -145,20 +145,30 @@ public class TravelingSalesman extends Applet implements Runnable
     public void run()
     {
         update();
-
-        while (generation < 1000)
+        try
         {
-            generation++;
-            
-            Tour best = population.nextIteration();
-            
-            setStatus("Generation " + generation + " Cost " + (int) best.getCost());
-            System.out.println((int) best.getCost());
-            
-            update();
-
+            while (generation < 1000)
+            {
+                generation++;
+                
+                Tour best;
+                
+                    best = population.nextIteration();
+                
+                
+                setStatus("Generation " + generation + " Cost " + (int) best.getCost());
+                System.out.println((int) best.getCost());
+                
+                update();
+    
+            }
+            setStatus("Solution found after " + generation + " generations.");
         }
-        setStatus("Solution found after " + generation + " generations.");
+        catch (InterruptedException e)
+        {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
 
     public void paint(Graphics g)

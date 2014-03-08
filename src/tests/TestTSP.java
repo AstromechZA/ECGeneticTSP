@@ -13,7 +13,7 @@ public class TestTSP {
 		try {
 			World w = new World("data/194.dat");
 			
-			Population population = new Population(1000, w);
+			Population population = new Population(1000, w, 4);
 			
 			int generation = 0;
 			long t1 = System.currentTimeMillis();
@@ -36,6 +36,10 @@ public class TestTSP {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+        catch (InterruptedException e)
+        {
+            e.printStackTrace();
+        }
 
 	}
 

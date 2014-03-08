@@ -10,13 +10,13 @@ public class BetterRandom extends Random
 
     // singleton
     private static BetterRandom _instance=null;    
-    public static BetterRandom instance() 
+    public synchronized static BetterRandom instance() 
     {
         if (_instance == null) _instance = new BetterRandom();
         return _instance;
     }
     
-    public <T> T choose(final Collection<T> collection)
+    public synchronized <T> T choose(final Collection<T> collection)
     {
         if(collection.size() <= 0) return null;
         int ri = this.nextInt(collection.size());
