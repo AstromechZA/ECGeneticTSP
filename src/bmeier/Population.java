@@ -12,7 +12,7 @@ import bmeier.util.Pair;
 
 public class Population
 {
-    private List<Tour> individuals = new ArrayList<Tour>();
+    private List<Tour> parents = new ArrayList<Tour>();
 
     private ICrossoverOp recom;
     private IMutatorOp mut;
@@ -24,22 +24,20 @@ public class Population
         
         for(int i=0;i<size;i++)
         {
-            individuals.add(GreedyTourBuilder.create(w));
+            parents.add(GreedyTourBuilder.create(w));
         }
         rank();
     }
     
-    
-    public Population(Population previous, World w)
+    public Tour nextIteration()
     {
-        recom = previous.recom;
-        mut = previous.mut;
-        
         RouletteWheel<Tour> wheel = new RouletteWheel<Tour>();
-        for(Tour t : previous.individuals) wheel.add(t, 1.0f/(t.getCost()));      
+        for(Tour t : parents) wheel.add(t, 1.0f/(t.getCost()));      
         RouletteWheelIterator<Tour> spinner = new RouletteWheelIterator<Tour>(wheel);
         
-        while(individuals.size() < previous.individuals.size())
+        List<Tour> children = new ArrayList<Tour>(parents.size());
+        
+        while(children.size() < parents.size())
         {
             Tour t1 = spinner.spin();
             Tour t2 = spinner.spin();
@@ -55,28 +53,34 @@ public class Population
             t.add(c2);
             Collections.sort(t);
             
-            individuals.add(t.get(0));
-            individuals.add(t.get(1)); 
+            children.add(t.get(0));
+            children.add(t.get(1)); 
         }
-                
-        while(individuals.size() > previous.individuals.size()) individuals.remove(0);        
-
-        rank();
+        
+        while(children.size() > parents.size()) children.remove(children.size()-1);        
+        
+        Collections.sort(children);
+        
+        parents = children;
+        
+        return top();
+        
     }
+    
     
     public void rank()
     {
-    	Collections.sort(individuals);
+    	Collections.sort(parents);
     }
     
     public Tour top()
     {
-        return individuals.get(0);        
+        return parents.get(0);        
     }
     
     public Tour bottom()
     {
-        return individuals.get(individuals.size()-1);
+        return parents.get(parents.size()-1);
     }
     
     

@@ -22,10 +22,8 @@ public class TestTSP {
 	        {
 				t1 = System.currentTimeMillis();
 	            generation++;
-
-	            population = new Population(population, w);
 	            
-	            Tour best = population.top();
+	            Tour best = population.nextIteration();
 	            
 	            t2 = System.currentTimeMillis();
 	            
