@@ -35,13 +35,14 @@ public class Population
         recom = previous.recom;
         mut = previous.mut;
         
-        RouletteWheelSelector<Tour> wheel = new RouletteWheelSelector<Tour>();
-        for(Tour t : previous.individuals) wheel.add(t, 1.0f/(t.getCost()));        
+        RouletteWheel<Tour> wheel = new RouletteWheel<Tour>();
+        for(Tour t : previous.individuals) wheel.add(t, 1.0f/(t.getCost()));      
+        RouletteWheelIterator<Tour> spinner = new RouletteWheelIterator<Tour>(wheel);
         
         while(individuals.size() < previous.individuals.size())
         {
-            Tour t1 = wheel.spin();
-            Tour t2 = wheel.spin();
+            Tour t1 = spinner.spin();
+            Tour t2 = spinner.spin();
             
             Pair<Tour, Tour> offspring = recom.recombine(t1, t2);
             Tour c1 = mut.mutate(offspring.first);

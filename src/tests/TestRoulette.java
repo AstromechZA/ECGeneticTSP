@@ -1,6 +1,7 @@
 package tests;
 
-import bmeier.RouletteWheelSelector;
+import bmeier.RouletteWheel;
+import bmeier.RouletteWheelIterator;
 
 public class TestRoulette
 {
@@ -9,14 +10,15 @@ public class TestRoulette
     {
         // TODO Auto-generated method stub
         
-        RouletteWheelSelector<String> r = new RouletteWheelSelector<String>();
-
+        RouletteWheel<String> r = new RouletteWheel<String>();
+        RouletteWheelIterator<String> s = new RouletteWheelIterator<String>(r);
+        
         r.add("common", 75);
         r.add("less", 25);
         
         for(int i=0;i<100;i++)
         {
-            System.out.println(r.spin());
+            System.out.println(s.spin());
         }
         
     }

@@ -157,7 +157,7 @@ public class TravelingSalesman extends Applet implements Runnable
             setStatus("Generation " + generation + " Cost " + (int) best.getCost());
             System.out.println((int) best.getCost());
             
-            if(generation % 10 == 1)update();
+            update();
 
         }
         setStatus("Solution found after " + generation + " generations.");
