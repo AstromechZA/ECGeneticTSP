@@ -32,6 +32,13 @@ public class IndexIterator implements Iterator<Integer>
 		
 		return index;
 	}
+
+    @Override
+    public void remove()
+    {
+        // TODO Auto-generated method stub
+        
+    }
 	
 	
 }
