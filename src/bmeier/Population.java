@@ -11,6 +11,8 @@ import bmeier.crossover.PMXCrossover;
 import bmeier.mutator.IMutatorOp;
 import bmeier.mutator.MoveGeneMutator;
 import bmeier.mutator.SingleSwapMutator;
+import bmeier.mutator.ThreeOptMutator;
+import bmeier.mutator.TwoOptMutator;
 import bmeier.util.Pair;
 
 public class Population
@@ -24,8 +26,8 @@ public class Population
     public Population(int size, World w)
     {
     	recom = new ERCrossover(w.numcities);
-        mut1 = new MoveGeneMutator();
-        mut2 = new SingleSwapMutator();
+        mut1 = new TwoOptMutator();
+        mut2 = new ThreeOptMutator();
         
         for(int i=0;i<size;i++)
         {
@@ -51,7 +53,7 @@ public class Population
             
             Pair<Tour, Tour> offspring = recom.recombine(t1, t2);
             Tour c1 = mut1.mutate(offspring.first);
-            Tour c2 = mut2.mutate(offspring.second);
+            Tour c2 = mut1.mutate(offspring.second);
             
             List<Tour> t = new ArrayList<Tour>(4);
             t.add(t1);
@@ -61,7 +63,7 @@ public class Population
             Collections.sort(t);
             
             individuals.add(t.get(0));
-            individuals.add(t.get(1));            
+            individuals.add(t.get(1)); 
         }
                 
         while(individuals.size() > previous.individuals.size()) individuals.remove(0);        
