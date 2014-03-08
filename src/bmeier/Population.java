@@ -3,15 +3,10 @@ package bmeier;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 
 import bmeier.crossover.ERCrossover;
 import bmeier.crossover.ICrossoverOp;
-import bmeier.crossover.PMXCrossover;
 import bmeier.mutator.IMutatorOp;
-import bmeier.mutator.MoveGeneMutator;
-import bmeier.mutator.SingleSwapMutator;
-import bmeier.mutator.ThreeOptMutator;
 import bmeier.mutator.TwoOptMutator;
 import bmeier.util.Pair;
 
@@ -20,14 +15,12 @@ public class Population
     private List<Tour> individuals = new ArrayList<Tour>();
 
     private ICrossoverOp recom;
-    private IMutatorOp mut1;
-    private IMutatorOp mut2;
+    private IMutatorOp mut;
     
     public Population(int size, World w)
     {
     	recom = new ERCrossover(w.numcities);
-        mut1 = new TwoOptMutator();
-        mut2 = new ThreeOptMutator();
+        mut = new TwoOptMutator();
         
         for(int i=0;i<size;i++)
         {
@@ -40,11 +33,10 @@ public class Population
     public Population(Population previous, World w)
     {
         recom = previous.recom;
-        mut1 = previous.mut1;
-        mut2 = previous.mut2;
+        mut = previous.mut;
         
         RouletteWheelSelector<Tour> wheel = new RouletteWheelSelector<Tour>();
-        for(Tour t : previous.individuals) wheel.add(t, 1.0f/(t.getCost()*t.getCost()));        
+        for(Tour t : previous.individuals) wheel.add(t, 1.0f/(t.getCost()));        
         
         while(individuals.size() < previous.individuals.size())
         {
@@ -52,8 +44,8 @@ public class Population
             Tour t2 = wheel.spin();
             
             Pair<Tour, Tour> offspring = recom.recombine(t1, t2);
-            Tour c1 = mut1.mutate(offspring.first);
-            Tour c2 = mut1.mutate(offspring.second);
+            Tour c1 = mut.mutate(offspring.first);
+            Tour c2 = mut.mutate(offspring.second);
             
             List<Tour> t = new ArrayList<Tour>(4);
             t.add(t1);
