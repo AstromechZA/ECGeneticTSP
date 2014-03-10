@@ -166,7 +166,6 @@ public class TravelingSalesman extends Applet implements Runnable
         }
         catch (InterruptedException e)
         {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }

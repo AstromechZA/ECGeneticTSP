@@ -19,15 +19,12 @@ public class BulkTestTSP {
 		try {
 		    for(int i=0;i<50;i++)
 		    {
-    			World w = new World("data/194.dat");
+    			World w = new World(800, 600, 200);
     			
     			Population population = new Population(1000, w, 4);
     			
     			List<Float> bestfitness = new ArrayList<Float>();
-    			
-    			
-    			
-    			
+    			    			
     			int generation = 0;
     			long t1 = System.currentTimeMillis();
     			long t2 = System.currentTimeMillis();

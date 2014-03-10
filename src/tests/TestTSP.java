@@ -11,7 +11,7 @@ public class TestTSP {
 	public static void main(String[] args) {
 		
 		try {
-			World w = new World("data/194.dat");
+			World w = new World(800, 600, 100);
 			
 			Population population = new Population(1000, w, 4);
 			
@@ -32,11 +32,8 @@ public class TestTSP {
 	            System.out.println("Generation " + generation + " Cost " + (int) best.getCost() + " elapsed: " + (t2-t1) + "ms");
 
 	        }			
-			
-		} catch (IOException e) {
-			e.printStackTrace();
 		}
-        catch (InterruptedException e)
+        catch (Exception e)
         {
             e.printStackTrace();
         }
