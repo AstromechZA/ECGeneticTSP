@@ -37,8 +37,8 @@ public class TravelingSalesman extends Applet implements Runnable
 
     public void init()
     {
+        setSize(800,600);
         setLayout(new BorderLayout());
-
         // setup the controls
         ctrlButtons = new Panel();
         ctrlStart = new Button("Start");
@@ -60,7 +60,7 @@ public class TravelingSalesman extends Applet implements Runnable
                 startThread();
             }
         });
-
+        
         started = false;
         update();
     }
@@ -75,9 +75,10 @@ public class TravelingSalesman extends Applet implements Runnable
 
         FontMetrics fm = getGraphics().getFontMetrics();
         int bottom = ctrlButtons.getBounds().y - fm.getHeight() - 2;
-        
+            
         world = new World(getBounds().width - 10, bottom - 10, cityCount); 
-        
+        System.out.println(getBounds().width - 10);
+        System.out.println(bottom - 10);
         population = new Population(populationSize, world, 4);
         
         started = true;

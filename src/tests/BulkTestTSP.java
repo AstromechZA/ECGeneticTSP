@@ -19,7 +19,7 @@ public class BulkTestTSP {
 		try {
 		    for(int i=0;i<50;i++)
 		    {
-    			World w = new World(800, 600, 200);
+    			World w = new World(790, 539, 200);
     			
     			Population population = new Population(1000, w, 4);
     			
