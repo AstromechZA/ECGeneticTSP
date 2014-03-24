@@ -6,7 +6,7 @@ import java.util.List;
 
 public class Population
 {
-    private List<Tour> parents = new ArrayList<Tour>();
+    private List<Tour> parents = Collections.synchronizedList(new ArrayList<Tour>());
 
     
     private ThreadedPopulator[] populators;
@@ -38,23 +38,21 @@ public class Population
         RouletteWheel<Tour> wheel = new RouletteWheel<Tour>();
         for(Tour t : parents) wheel.add(t, 1.0f/(t.getCost()));      
         
-        List<Tour> children = Collections.synchronizedList(new ArrayList<Tour>(parents.size()));
-        
         Thread[] running = new Thread[populators.length];
         
         for(int i=0;i<populators.length;i++)
         {
             populators[i].setSelector(new RouletteWheelIterator<Tour>(wheel));
-            populators[i].setTarget(children);
+            populators[i].setTarget(parents);
             running[i] = new Thread(populators[i]);
             running[i].start();
         }  
         
         for(int i=0;i<populators.length;i++) running[i].join();
         
-        Collections.sort(children);
+        Collections.sort(parents);
         
-        parents = children;
+        while(parents.size()>1000) parents.remove(parents.size()-1);
         
         return top();
         

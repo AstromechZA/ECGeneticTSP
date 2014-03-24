@@ -23,6 +23,7 @@ public class GreedyTourBuilder
         order[0] = startcity;
         selectable.remove(startcity);
         int lastcity = startcity;
+                
         for (int i = 1; i < w.numcities; i++)
         {
             // find closest city

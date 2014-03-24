@@ -152,9 +152,7 @@ public class TravelingSalesman extends Applet implements Runnable
             {
                 generation++;
                 
-                Tour best;
-                
-                    best = population.nextIteration();
+                Tour best = population.nextIteration();
                 
                 
                 setStatus("Generation " + generation + " Cost " + (int) best.getCost());
